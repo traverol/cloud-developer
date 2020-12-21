@@ -18,6 +18,18 @@ router.get('/', async (req: Request, res: Response) => {
 
 //@TODO
 //Add an endpoint to GET a specific resource by Primary Key
+//get a specific resource
+router.get('/:id', async (req: Request, res: Response) => {
+    console.log(req);
+    const item = await FeedItem.findByPk(Number(req.query.id));
+    if(item == null) {
+        console.log("item not found");
+        res.status(400);
+    } else {
+        console.log("item found", item);
+        res.status(201).send(item);
+    }
+});
 
 // update a specific resource
 router.patch('/:id', 
@@ -32,7 +44,9 @@ router.patch('/:id',
 router.get('/signed-url/:fileName', 
     requireAuth, 
     async (req: Request, res: Response) => {
+        console.log("FileName to upload ", req.params);
     let { fileName } = req.params;
+    console.log("FileName to upload ", fileName);
     const url = AWS.getPutSignedUrl(fileName);
     res.status(201).send({url: url});
 });
